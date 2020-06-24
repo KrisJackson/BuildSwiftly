@@ -42,7 +42,7 @@ class SignUp {
                 return
             }
             
-            log.info("Account created!")
+            log.debug("Account created!")
             completion(Auth.auth().currentUser, Error.error(type: .none, text: "Account created!"))
             return
         }
@@ -61,7 +61,7 @@ class SignUp {
         
         if exts.contains(emailExtension) {
             
-            log.info(String.SignUp.forceExtentsion.logSuccess)
+            log.debug(String.SignUp.forceExtentsion.logSuccess)
             return Error.error(type: Error.ErrorType.none, text: String.SignUp.forceExtentsion.success)
             
         } else {

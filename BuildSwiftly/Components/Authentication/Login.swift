@@ -22,13 +22,13 @@ class Login {
         }
         
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
-            if let error = error {
+            if let error = error { 
                 log.warning(error.localizedDescription)
                 completion(Auth.auth().currentUser, Error.error(type: .system, text: error.localizedDescription))
                 return
             }
             
-            log.info(String.Login.login.logSuccess)
+            log.debug(String.Login.login.logSuccess)
             completion(Auth.auth().currentUser, Error.error(type: .none, text: String.Login.login.success))
             return
         }

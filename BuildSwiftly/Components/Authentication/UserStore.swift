@@ -41,7 +41,7 @@ class UserStore {
                 return
             }
             
-            log.info("User document exists!")
+            log.debug("User document exists!")
             completion(snapshot.exists, Error.error(type: .none, text: "Document successfully retrieved!"))
         }
     }

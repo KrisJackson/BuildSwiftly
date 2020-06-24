@@ -17,7 +17,7 @@ class CurrentUser {
             log.warning(String.CurrentUser.doesExist.logDoesNotExist)
             return (nil, false)
         }
-        log.info(String.CurrentUser.doesExist.logExists + user.uid + ".")
+        log.debug(String.CurrentUser.doesExist.logExists + user.uid + ".")
         return (user, true)
     }
     
@@ -26,7 +26,7 @@ class CurrentUser {
         
         if doesExist {
             try! Auth.auth().signOut()
-            log.info(String.CurrentUser.signOut.logSignOut + user!.uid + ".")
+            log.debug(String.CurrentUser.signOut.logSignOut + user!.uid + ".")
             return Error.error(type: .none, text: String.CurrentUser.signOut.signOut + user!.uid + ".")
         } else {
             log.warning(String.CurrentUser.signOut.doesNotExist)
