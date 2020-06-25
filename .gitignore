@@ -89,4 +89,5 @@ fastlane/test_output
 
 iOSInjectionProject/
 BuildSwiftly/Config/GoogleService-Info.plist
+BuildSwiftly/Secrets/ 
 Pods/
