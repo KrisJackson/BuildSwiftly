@@ -10,7 +10,7 @@
 		18234BBA24A2A91A00533A49 /* Verification_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18234BB724A2A91A00533A49 /* Verification_Test.swift */; };
 		18234BBB24A2A91A00533A49 /* Login_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18234BB824A2A91A00533A49 /* Login_Test.swift */; };
 		18234BBC24A2A91A00533A49 /* SignUp_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18234BB924A2A91A00533A49 /* SignUp_Test.swift */; };
-		18234BC424A5502A00533A49 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18234BC324A5502A00533A49 /* Secrets.swift */; };
+		18234BC724A7034D00533A49 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18234BC624A7034D00533A49 /* Secrets.swift */; };
 		18A8B6B724A2802A008878F3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B6B624A2802A008878F3 /* SceneDelegate.swift */; };
 		18A8B6B924A2802A008878F3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B6B824A2802A008878F3 /* ViewController.swift */; };
 		18A8B6BC24A2802A008878F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18A8B6BA24A2802A008878F3 /* Main.storyboard */; };
@@ -55,7 +55,7 @@
 		18234BB724A2A91A00533A49 /* Verification_Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Verification_Test.swift; sourceTree = "<group>"; };
 		18234BB824A2A91A00533A49 /* Login_Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login_Test.swift; sourceTree = "<group>"; };
 		18234BB924A2A91A00533A49 /* SignUp_Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUp_Test.swift; sourceTree = "<group>"; };
-		18234BC324A5502A00533A49 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		18234BC624A7034D00533A49 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = BuildSwiftly/Global/Secrets.swift; sourceTree = SOURCE_ROOT; };
 		18A8B6B124A2802A008878F3 /* BuildSwiftly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuildSwiftly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A8B6B624A2802A008878F3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		18A8B6B824A2802A008878F3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -143,7 +143,7 @@
 		18234BC524A5507200533A49 /* Secrets */ = {
 			isa = PBXGroup;
 			children = (
-				18234BC324A5502A00533A49 /* Secrets.swift */,
+				18234BC624A7034D00533A49 /* Secrets.swift */,
 			);
 			path = Secrets;
 			sourceTree = "<group>";
@@ -555,7 +555,7 @@
 				18A8B70724A2845C008878F3 /* CurrentUser.swift in Sources */,
 				18A8B6B724A2802A008878F3 /* SceneDelegate.swift in Sources */,
 				18A8B70924A2845C008878F3 /* SignUp.swift in Sources */,
-				18234BC424A5502A00533A49 /* Secrets.swift in Sources */,
+				18234BC724A7034D00533A49 /* Secrets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
