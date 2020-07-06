@@ -13,5 +13,6 @@ There is no particular structure that is required, however, I *require* any new 
 **More components coming soon. This document show be updated when necessary.**
 
 * Authentication - ***Firestore***: This folder contains components for authenticating, verifiying, and referencing a user and their respective data
+* Push Notifications - ***Firebase Cloud Messaging***: This folder contains components for sending push notifications from a sender to a receiver 
 
 
