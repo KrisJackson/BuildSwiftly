@@ -1,5 +1,6 @@
 //
 //  SignOut.swift
+//  BuildSwiftly
 //
 //  Created by Kristopher Jackson
 //  Copyright © 2020 Kristopher Jackson. All rights reserved.
@@ -26,10 +27,8 @@ class CurrentUser {
         
         if doesExist {
             try! Auth.auth().signOut()
-            log.debug(String.CurrentUser.signOut.logSignOut + user!.uid + ".")
             return Error.error(type: .none, text: String.CurrentUser.signOut.signOut + user!.uid + ".")
         } else {
-            log.warning(String.CurrentUser.signOut.doesNotExist)
             return Error.error(type: .weak, text: String.CurrentUser.signOut.doesNotExist)
         }
     }

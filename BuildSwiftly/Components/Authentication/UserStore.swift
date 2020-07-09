@@ -15,7 +15,6 @@ class UserStore {
 
         Firestore.firestore().collection("users").document(user.uid).setData(data, merge: true) { (error) in
             if let error = error {
-                log.warning(error.localizedDescription)
                 completion(Error.error(type: .system, text: error.localizedDescription))
                 return
             }
@@ -36,12 +35,10 @@ class UserStore {
             }
             
             guard let snapshot = snapshot else {
-                log.error("There seems to have been error retrieving the user.")
                 completion(nil, Error.error(type: .system, text: "There seems to have been error retrieving the user."))
                 return
             }
             
-            log.debug("User document exists!")
             completion(snapshot.exists, Error.error(type: .none, text: "Document successfully retrieved!"))
         }
     }

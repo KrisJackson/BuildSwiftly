@@ -31,52 +31,53 @@ class Channel {
      */
     func create(withUsersIDs users: [String], named: String? = nil, authorID author: String? = Auth.auth().currentUser?.uid ?? nil, _ completion: @escaping(_ error: Error) -> Void) {
         
-        let ChannelCollection = Firestore.firestore().collection("channels")
+        let ChannelCollection = Firestore.firestore().collection(String.Database.Channel.collectionID)
         let newChannelID: String = ChannelCollection.document().documentID
+        
         log.debug("Creating new channel with ID \(newChannelID)...")
         
         guard let author = author else {
-            log.warning("A channel cannot be created without an author.")
             completion(Error.error(type: .weak, text: "A channel cannot be created without an author."))
             return
         }
         
         if users.isEmpty {
-            log.warning("A channel must have at least one user.")
             completion(Error.error(type: .weak, text: "A channel must contain at least one user."))
             return
         }
         
         ChannelCollection.document(newChannelID).setData([
             
-            "id": newChannelID,                                 // Unique ID and document name of the channel being created
-            "author": author,                                   // Unique ID of the channel creater
-            "admin": [author],                                  // List of admin users that have control of the channel
-            "users": users.sorted(),                            // List of all users in the channel. Must be SORTED to uniquely identifY without channel ID
-            "created": NSDate().timeIntervalSince1970,          // Timestamp that the channel was created
+            String.Database.Channel.id: newChannelID,                                 // Unique ID and document name of the channel being created
+            String.Database.Channel.author: author,                                   // Unique ID of the channel creater
+            String.Database.Channel.admin: [author],                                  // List of admin users that have control of the channel
+            String.Database.Channel.users: users.sorted(),                            // List of all users in the channel. Must be SORTED to uniquely identifY without channel ID
+            String.Database.Channel.created: NSDate().timeIntervalSince1970,          // Timestamp that the channel was created
             
-            "lastMedia": NSNull(),                              // Last message: Media sent. Null if no message
-            "lastSender": NSNull(),                             // Last message: User to send message. Null if no message
-            "lastText": NSNull(),                               // Last message: Text of last message. Null if no message
-            "lastTimestamp": NSNull(),                          // Last message: Timestamp that last message was sent. Null if no message
-            "lastReplyTo": NSNull(),                            // Last message: User of last message. Null if message was to user in channel
+            String.Database.Channel.lastMedia: NSNull(),                              // Last message: Media sent. Null if no message
+            String.Database.Channel.lastSender: NSNull(),                             // Last message: User to send message. Null if no message
+            String.Database.Channel.lastText: NSNull(),                               // Last message: Text of last message. Null if no message
+            String.Database.Channel.lastTimestamp: NSNull(),                          // Last message: Timestamp that last message was sent. Null if no message
+            String.Database.Channel.lastReplyTo: NSNull(),                            // Last message: User of last message. Null if message was to user in channel
         
         ], merge: true) { (error) in
             
             guard let error = error else {
-                log.debug("Channel \(newChannelID) has been created successfully!")
                 completion(Error.error(type: .none, text: "Channel \(newChannelID) has been created successfully!"))
                 return
             }
             
-            log.warning(error.localizedDescription)
             completion(Error.error(type: .system, text: error.localizedDescription))
             return
         }
         
     }
     
-    func addUser(withID uid: String, toChannelWithID: String, _ completion: @escaping(Channel, Error) -> Void) {
+    func exists(withUsers users: [String], _ completion: @escaping(Bool, Error) -> Void) {
+        
+    }
+    
+    func get(forUser user: String, _ completion: @escaping(Error) -> Void) {
         
     }
     

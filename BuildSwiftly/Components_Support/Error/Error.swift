@@ -29,6 +29,20 @@ class Error {
         let err = Error()
         err.type = type
         err.text = text
+        
+        switch type {
+        case .none:
+            log.debug(text ?? "Success!")
+            break
+        case .fatal:
+            log.error(text ?? "Fatal error!")
+            break
+        default:
+            log.warning(text ?? "Flag!")
+            break
+        }
+        
+        
         return err
     }
     

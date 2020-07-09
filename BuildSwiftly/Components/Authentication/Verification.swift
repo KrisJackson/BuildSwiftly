@@ -11,6 +11,7 @@ import Firebase
 class Verification {
     
     static func isVerified(user: User = Auth.auth().currentUser!) -> (User, Bool) {
+        
         var message: String!
         if user.isEmailVerified {
             message = String.Verification.isVerified.emailVerified

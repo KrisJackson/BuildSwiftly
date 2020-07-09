@@ -18,13 +18,11 @@ class SignUp {
         let confirm = c.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if email.isEmpty || password.isEmpty || confirm.isEmpty {
-            log.warning(String.SignUp.signUp.logEmailEmpty)
             completion(nil, Error.error(type: .weak, text: String.SignUp.signUp.emailEmpty))
             return
         }
         
         if (password != confirm) {
-            log.warning(String.SignUp.signUp.logPasswordMatch)
             completion(nil, Error.error(type: .weak, text: String.SignUp.signUp.passwordMatch))
             return
         }
@@ -37,12 +35,10 @@ class SignUp {
         
         Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
             if let error = error {
-                log.warning(error.localizedDescription)
                 completion(Auth.auth().currentUser, Error.error(type: .system, text: error.localizedDescription))
                 return
             }
             
-            log.debug("Account created!")
             completion(Auth.auth().currentUser, Error.error(type: .none, text: "Account created!"))
             return
         }
@@ -55,18 +51,17 @@ class SignUp {
         let emailExtension = getExtension(email: email)
         
         if exts.isEmpty {
-            log.warning("No extension given")
+            
             return Error.error(type: .none, text: "No extensions given")
+            
         }
         
         if exts.contains(emailExtension) {
-            
-            log.debug(String.SignUp.forceExtentsion.logSuccess)
+    
             return Error.error(type: Error.ErrorType.none, text: String.SignUp.forceExtentsion.success)
             
         } else {
             
-            log.warning(String.SignUp.forceExtentsion.logBadExt)
             return Error.error(type: .weak, text: String.SignUp.forceExtentsion.badExt)
             
         }
