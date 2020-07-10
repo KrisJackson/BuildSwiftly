@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 
 class Login {
-    static func login(email e: String, password p: String, completion: @escaping (User?, Error) -> Void) {
+    static func login(email e: String, password p: String, completion: @escaping (_ user: User?, _ error: Error) -> Void) {
         log.debug(String.Login.login.logStart)
         
         let email = e.trimmingCharacters(in: .whitespacesAndNewlines)

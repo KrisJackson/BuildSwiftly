@@ -29,7 +29,7 @@ class Channel {
      - Parameter error: Contains a message and the error type upon completion.
      
      */
-    func create(withUsersIDs users: [String], named: String? = nil, authorID author: String? = Auth.auth().currentUser?.uid ?? nil, _ completion: @escaping(_ error: Error) -> Void) {
+    func create(withUsersIDs users: [String], named: String? = nil, authorID author: String? = Auth.auth().currentUser?.uid ?? nil, _ completion: @escaping (_ error: Error) -> Void) {
         
         let ChannelCollection = Firestore.firestore().collection(String.Database.Channel.collectionID)
         let newChannelID: String = ChannelCollection.document().documentID
@@ -73,11 +73,11 @@ class Channel {
         
     }
     
-    func exists(withUsers users: [String], _ completion: @escaping(Bool, Error) -> Void) {
+    func exists(withUsers users: [String], _ completion: @escaping (_ exists: Bool, _ error: Error) -> Void) {
         
     }
     
-    func get(forUser user: String, _ completion: @escaping(Error) -> Void) {
+    func get(forUser user: String, _ completion: @escaping(_ error: Error) -> Void) {
         
     }
     

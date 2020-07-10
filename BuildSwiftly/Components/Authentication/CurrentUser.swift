@@ -14,10 +14,12 @@ class CurrentUser {
     let user: User? = Auth.auth().currentUser
     
     static func doesExist() -> (User?, Bool) {
+        
         guard let user = Auth.auth().currentUser else {
             log.warning(String.CurrentUser.doesExist.logDoesNotExist)
             return (nil, false)
         }
+        
         log.debug(String.CurrentUser.doesExist.logExists + user.uid + ".")
         return (user, true)
     }

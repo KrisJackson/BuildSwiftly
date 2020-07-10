@@ -10,7 +10,7 @@ import Firebase
 
 class SignUp {
     
-    static func signUp(withEmail e: String, password p: String, confirmPassword c: String, ofType exts: [String] = [], completion: @escaping (User?, Error) -> Void) {
+    static func signUp(withEmail e: String, password p: String, confirmPassword c: String, ofType exts: [String] = [], completion: @escaping (_ user: User?, _ error: Error) -> Void) {
         log.debug(String.SignUp.signUp.logStart)
         
         let email = e.trimmingCharacters(in: .whitespacesAndNewlines)

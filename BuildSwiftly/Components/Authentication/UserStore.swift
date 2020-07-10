@@ -10,7 +10,7 @@ import Firebase
 
 class UserStore {
     
-    static func store(data: [String: Any], forUser user: User = Auth.auth().currentUser!, _ completion: @escaping (Error) -> Void) {
+    static func store(data: [String: Any], forUser user: User = Auth.auth().currentUser!, _ completion: @escaping (_ error: Error) -> Void) {
         log.debug("Begin storing user data...")
 
         Firestore.firestore().collection("users").document(user.uid).setData(data, merge: true) { (error) in
@@ -23,7 +23,7 @@ class UserStore {
         }
     }
     
-    static func doesDocumentExist(forUser user: User, _ completion: @escaping (Bool?, Error) -> Void) {
+    static func doesDocumentExist(forUser user: User, _ completion: @escaping (_ exists: Bool?, _ error: Error) -> Void) {
         log.debug("Checking if user exists...")
         
         Firestore.firestore().collection("users").document(user.uid).getDocument { (snapshot, error) in

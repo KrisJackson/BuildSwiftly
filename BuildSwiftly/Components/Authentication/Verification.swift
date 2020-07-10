@@ -23,7 +23,7 @@ class Verification {
         return (user, user.isEmailVerified)
     }
     
-    static func sendTo(user: User? = Auth.auth().currentUser, completion: @escaping (Error) -> Void) {
+    static func sendTo(user: User? = Auth.auth().currentUser, completion: @escaping (_ error: Error) -> Void) {
         log.debug("Begin verification...")
         
         guard let user = user else {
