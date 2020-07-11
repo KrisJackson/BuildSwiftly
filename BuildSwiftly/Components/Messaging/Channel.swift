@@ -73,6 +73,10 @@ class Channel {
         
     }
     
+    func update() {
+        
+    }
+    
     func exists(withUsers users: [String], _ completion: @escaping (_ exists: Bool, _ error: Error) -> Void) {
         
     }

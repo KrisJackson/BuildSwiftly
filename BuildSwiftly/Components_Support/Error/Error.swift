@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyBeaver
 
 class Error {
     
@@ -41,7 +42,6 @@ class Error {
             log.warning(text ?? "Flag!")
             break
         }
-        
         
         return err
     }

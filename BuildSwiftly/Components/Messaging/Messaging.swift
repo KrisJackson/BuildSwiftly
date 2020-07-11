@@ -58,7 +58,11 @@ struct Message {
 }
 
 class MessageHandler {
-    
+    /**
+     
+        Sends a message to all users within the channel. Messages can contain either text, media, or both. When a message is sent
+ 
+    */
     static func send(message: Message, _ completion: @escaping (_ error: Error) -> Void) {
         
         log.debug("Preparing to send message...")
@@ -94,7 +98,7 @@ class MessageHandler {
                 completion(Error.error(type: .weak, text: "No message has been given."))
                 return
             }
-        } /* Check for errors -- END */
+        }/* *** Check for errors -- END *** */
         
         
         /// Prepare data to be sent!
@@ -103,11 +107,12 @@ class MessageHandler {
         messageBuf.senderUID = sender
         messageBuf.messageID = MessageID
         
+        
         /// Checks if media exists. If so, store media first, then send message.
         if var batchMedia = messageBuf.media {
             
             
-            /// Names each media file in the batch and saves
+            /// Names each media file in the batch and saves in buffer
             messageBuf.mediaID = []
             for (i, _) in batchMedia.enumerated() {
                 let mediaID = "\(MessageID)-\(i)"
@@ -118,20 +123,23 @@ class MessageHandler {
             
             /// Upload media to Firebase Storage
             /// If media is successfully stored, send message to Firestore.
-            Batch.upload(media: batchMedia, atPath: Storage.storage().reference(withPath: String.Database.Messaging.collectionID)) {
-                
-                /// Media successfully stored! Send message!
-                self.sendMessage(messageBuf, toRef: MessageRef) { (error) in
+            Batch.upload(media: batchMedia, atPath: Storage.storage().reference(withPath: "\(String.Database.Messaging.collectionID)/")) { (error) in
+                switch error.type {
+                case .none:
+                    
+                    /// Media successfully stored! Send message!
+                    self.sendMessage(messageBuf, toRef: MessageRef) { (error) in
+                        completion(error)
+                        return
+                    }
+                    
+                default:
+                    
                     completion(error)
+                    return
+                    
                 }
-                return
-                
             }
-            
-            // TODO: We need to test this! Check if this gets reached with error
-            
-            /// Media did not upload. If media does not upload, then text should not either.
-            completion(Error.error(type: .weak, text: "There was an error sending your message!"))
             
         } else {
             
