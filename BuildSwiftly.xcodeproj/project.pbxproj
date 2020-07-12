@@ -34,7 +34,7 @@
 		18A8B6F524A28252008878F3 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B6F424A28252008878F3 /* String.swift */; };
 		18A8B6F924A28279008878F3 /* ComponentsSupport-README_.md in Resources */ = {isa = PBXBuildFile; fileRef = 18A8B6F824A28279008878F3 /* ComponentsSupport-README_.md */; };
 		18A8B6FC24A28295008878F3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B6FB24A28295008878F3 /* Error.swift */; };
-		18A8B6FE24A282ED008878F3 /* Components-README.md in Resources */ = {isa = PBXBuildFile; fileRef = 18A8B6FD24A282ED008878F3 /* Components-README.md */; };
+		18A8B6FE24A282ED008878F3 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 18A8B6FD24A282ED008878F3 /* README.md */; };
 		18A8B70524A2845C008878F3 /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B70024A2845C008878F3 /* Verification.swift */; };
 		18A8B70624A2845C008878F3 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B70124A2845C008878F3 /* Login.swift */; };
 		18A8B70724A2845C008878F3 /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B70224A2845C008878F3 /* CurrentUser.swift */; };
@@ -97,7 +97,7 @@
 		18A8B6F424A28252008878F3 /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		18A8B6F824A28279008878F3 /* ComponentsSupport-README_.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "ComponentsSupport-README_.md"; sourceTree = "<group>"; };
 		18A8B6FB24A28295008878F3 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
-		18A8B6FD24A282ED008878F3 /* Components-README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Components-README.md"; sourceTree = "<group>"; };
+		18A8B6FD24A282ED008878F3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		18A8B70024A2845C008878F3 /* Verification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Verification.swift; sourceTree = "<group>"; };
 		18A8B70124A2845C008878F3 /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		18A8B70224A2845C008878F3 /* CurrentUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
@@ -297,7 +297,7 @@
 		18A8B6E624A28166008878F3 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				18A8B6FD24A282ED008878F3 /* Components-README.md */,
+				18A8B6FD24A282ED008878F3 /* README.md */,
 				18A8B6FF24A28380008878F3 /* Authentication */,
 				18016F8124B2B1AF00796621 /* PushNotifications */,
 				1882157324B51059003D4DA8 /* Messaging */,
@@ -496,7 +496,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18A8B6FE24A282ED008878F3 /* Components-README.md in Resources */,
+				18A8B6FE24A282ED008878F3 /* README.md in Resources */,
 				18A8B6C124A2802B008878F3 /* LaunchScreen.storyboard in Resources */,
 				18A8B6EC24A281E9008878F3 /* GoogleService-Info.plist in Resources */,
 				186F677A24B9E1CC0065D2B6 /* image1.jpg in Resources */,
