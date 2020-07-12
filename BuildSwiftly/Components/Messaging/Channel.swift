@@ -6,13 +6,14 @@
 //  Copyright © 2020 Kristopher Jackson. All rights reserved.
 //
 
-import Foundation
 import Firebase
+import FirebaseFirestore
+import Foundation
 
 extension BSMessaging {
     /**
      
-     A channel can be thoought of as a 'chat room'. The purpose of a channel is to store any important metadata related to a specific DM or a group chat. Each message should point directly to a channel.
+     Channels can be thought of as 'chat rooms' and keeps track of important metadata related to a specific chat. Each message should point to a channel.
      
      One common usage of channels may be when configuring an Inbox for your app. Rather than sorting through a collection of all messages, the developer can simply perform a fast query to find the channel related to the specified user.
      
@@ -21,7 +22,7 @@ extension BSMessaging {
         
         /**
          
-         Function called when creating a new channel.
+         Creates a new channel with no existing messages.
          
          - Parameter users: Array of `String` that contains the unique identifiers of the all participants of the channel. `users.sorted()` serves as one of two unique identifiers for the channel.
          - Parameter named: Optional name of the channel. Default is `nil`.
@@ -75,6 +76,8 @@ extension BSMessaging {
         }
         
         func updateChannel(withMessage message: Message, _ completion: @escaping (Error) -> Void) {
+            
+            
             
         }
         

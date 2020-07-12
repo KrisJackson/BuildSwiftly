@@ -34,9 +34,15 @@ class ViewController: UIViewController {
         message.text = "Test message"
         message.users = ["asdfa", "asfasd"]
         
-        BSMessaging.Sender.send(message: message) { (error) in
-            print("🟢 " + (error.text ?? "No error message"))
-        }
+//        BSMessaging.MessageHandler.send(message: message) { (error) in
+//            print("🟢 " + (error.text ?? "No error message"))
+//        }
+//        
+//        
+//        let messaging = BSMessaging.MessageHandler(message: message) { (error) in
+//            
+//        }
+//        messaging.send(message: <#T##Message#>, <#T##completion: (Error) -> Void##(Error) -> Void#>)
     }
 
 
