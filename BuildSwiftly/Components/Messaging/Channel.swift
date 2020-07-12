@@ -11,6 +11,7 @@ import FirebaseFirestore
 import Foundation
 
 extension BSMessaging {
+    
     /**
      
      Channels can be thought of as 'chat rooms' and keeps track of important metadata related to a specific chat. Each message should point to a channel.
@@ -72,12 +73,6 @@ extension BSMessaging {
                 completion(Error.error(type: .system, text: error.localizedDescription))
                 return
             }
-            
-        }
-        
-        func updateChannel(withMessage message: Message, _ completion: @escaping (Error) -> Void) {
-            
-            
             
         }
         

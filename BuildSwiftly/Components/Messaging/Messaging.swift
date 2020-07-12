@@ -31,8 +31,6 @@ class BSMessaging {
         
         private var error: Error!
         private var messageBuf: Message!
-        
-        private var messageID: String!
         private var messageRef: DocumentReference!
         
         /**
@@ -43,18 +41,23 @@ class BSMessaging {
          */
         init(message: Message) {
             
+            messageBuf = message
             messageRef = Firestore.firestore().collection(String.Database.Messaging.collectionID).document()
-            messageID = messageRef.documentID
+            messageBuf.messageID = messageRef.documentID
+            
+            guard message.channelID != nil else {
+                error = Error.error(type: .weak, text: "Message point to a channel.")
+                return
+            }
             
             /// Checks that `Message` has a sender
-            guard let sender = message.senderUID else {
+            guard message.senderUID != nil else {
                 error = Error.error(type: .weak, text: "Message must contain a sender.")
                 return
             }
             
             /// Checks that `Message` has recipient array and at least one recipient
-            let users = message.users
-            if let users = users {
+            if let users = message.users {
                 
                 /// Checks that the recipient array contains at least one user
                 if users.isEmpty {
@@ -88,12 +91,6 @@ class BSMessaging {
                 }
                 
             }
-            
-            /// Prepare `Message` to be sent
-            messageBuf = message
-            messageBuf.users = users!
-            messageBuf.senderUID = sender
-            messageBuf.messageID = messageID
             
         }
         
@@ -136,7 +133,7 @@ class BSMessaging {
                         /// Sends text if exists
                         if let _ = self.messageBuf.text {
                             /// Message contains text
-                            self.sendMessage(self.messageBuf, toRef: self.messageRef) { (error) in
+                            self.sendMessage(toRef: self.messageRef) { (error) in
                                 completion(error)
                                 return
                             }
@@ -158,7 +155,7 @@ class BSMessaging {
             } else {
                 
                 /// No media to send. Send text message.
-                self.sendMessage(messageBuf, toRef: messageRef) { (error) in
+                self.sendMessage(toRef: messageRef) { (error) in
                     completion(error)
                 }
                 
@@ -169,32 +166,78 @@ class BSMessaging {
         
         /**
          
-         PRIVATE: Extracts data from `Message` and sends data to Firestore.
-         - Parameter message: Message to be sent to Firestore
-         - Parameter toRef: Documents reference of the message in Firestore. Message reference is created when `MessageHandler` is initialized and populated in this function.
-         - Parameter completion: Escapes with `Error`.
+         Updates the channel with the lastest message passed in `MessageHandler`.
+         - Parameter completion: Escapes with `Error`
          - Parameter error: Contains error type (`ErrorType.none` if no errors) and message that can be displayed in the UI if needed.
+         
          */
-        private func sendMessage(_ message: Message, toRef messageRef: DocumentReference, _ completion: @escaping (_ error: Error) -> Void) {
-            messageRef.setData([
-                
-                String.Database.Messaging.users: message.users.sorted(), /// **Must be sorted**. Sorted users serves as another way to uniquely identify channel if client doesn't know Channel ID
-                String.Database.Messaging.text: message.text ?? NSNull(),
-                String.Database.Messaging.media: message.mediaID ?? NSNull(),
-                String.Database.Messaging.sender: message.senderUID ?? NSNull(),
-                String.Database.Messaging.replyTo: message.replyToUID ?? NSNull(),
-                String.Database.Messaging.channelID: message.channelID ?? NSNull(),
-                String.Database.Messaging.messageID: message.messageID ?? NSNull(),
-                String.Database.Messaging.timestamp: NSDate().timeIntervalSince1970,
+        func updateChannel(_ completion: @escaping (Error) -> Void) {
+            
+            /// Reference to the channel being
+            let channelRef = Firestore.firestore()
+                .collection(String.Database.Channel.collectionID)
+                .document(messageBuf.channelID)
+            
+            channelRef.setData([
+            
+                String.Database.Channel.lastText: messageBuf.text ?? NSNull(),
+                String.Database.Channel.lastMedia: messageBuf.mediaID ?? NSNull(),
+                String.Database.Channel.lastSender: messageBuf.senderUID ?? NSNull(),
+                String.Database.Channel.lastReplyTo: messageBuf.replyToUID ?? NSNull(),
+                String.Database.Channel.lastTimestamp: messageBuf.timestamp ?? NSDate().timeIntervalSince1970,
             
             ], merge: true) { (error) in
                 
                 if let error = error {
                     completion(Error.error(type: .system, text: error.localizedDescription))
-                    
-                    
                 } else {
                     completion(Error.error(type: .none, text: "Message has successfully been sent!"))
+                }
+                
+            }
+        }
+        
+        
+        /**
+         
+         PRIVATE: Extracts data from `Message` and sends data to Firestore.
+         - Parameter toRef: Documents reference of the message in Firestore. Message reference is created when `MessageHandler` is initialized and populated in this function.
+         - Parameter completion: Escapes with `Error`.
+         - Parameter error: Contains error type (`ErrorType.none` if no errors) and message that can be displayed in the UI if needed.
+         
+         */
+        private func sendMessage(toRef messageRef: DocumentReference, _ completion: @escaping (_ error: Error) -> Void) {
+            
+            /// Set the time sent
+            let timestamp = NSDate().timeIntervalSince1970
+            messageBuf.timestamp = timestamp
+            
+            /// Send data to Firestore
+            messageRef.setData([
+                
+                String.Database.Messaging.users: messageBuf.users.sorted(), /// **Must be sorted**. Sorted users serves as another way to uniquely identify channel if client doesn't know Channel ID
+                String.Database.Messaging.text: messageBuf.text ?? NSNull(),
+                String.Database.Messaging.media: messageBuf.mediaID ?? NSNull(),
+                String.Database.Messaging.sender: messageBuf.senderUID ?? NSNull(),
+                String.Database.Messaging.replyTo: messageBuf.replyToUID ?? NSNull(),
+                String.Database.Messaging.channelID: messageBuf.channelID ?? NSNull(),
+                String.Database.Messaging.messageID: messageBuf.messageID ?? NSNull(),
+                String.Database.Messaging.timestamp: messageBuf.timestamp ?? NSDate().timeIntervalSince1970,
+            
+            ], merge: true) { (error) in
+                
+                if let error = error {
+                    
+                    completion(Error.error(type: .system, text: error.localizedDescription))
+                    
+                } else {
+                    
+                    completion(Error.error(type: .none, text: "Message has successfully been sent!"))
+                    
+                    /// Update channel w latest message
+                    self.updateChannel { (error) in
+                        /// ** Can do something here, but not necessary **
+                    }
                     
                 }
                 

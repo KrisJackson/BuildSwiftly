@@ -31,7 +31,7 @@ struct Message {
     ///
     ///
     /// The time is recorded in unix time format.
-    var timestamp: Int!
+    var timestamp: Double!
     
     /// Array of users within the channel.
     ///
