@@ -14,5 +14,5 @@ There is no particular structure that is required, however, I *require* any new 
 
 * Authentication - ***Firestore***: This folder contains components for authenticating, verifiying, and referencing a user and their respective data
 * Push Notifications - ***Firebase Cloud Messaging***: This folder contains components for sending push notifications from a sender to a receiver 
-
+* Messages - ***Firestore, Firebase Storage***: This folder contains components for sending messages and media between two or more users
 
