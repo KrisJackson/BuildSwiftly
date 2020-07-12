@@ -25,6 +25,7 @@ class ViewController: UIViewController {
             media.append(m)
         }
         
+        /// Prepare message to be sent
         var message = Message()
         message.channelID = "abc"
         message.media = media
@@ -33,9 +34,8 @@ class ViewController: UIViewController {
         message.text = "Test message"
         message.users = ["asdfa", "asfasd"]
         
-        print("Waiting")
-        MessageHandler.send(message: message) { (error) in
-            print("🟢" + (error.text ?? "No message"))
+        BSMessaging.Sender.send(message: message) { (error) in
+            print("🟢 " + (error.text ?? "No error message"))
         }
     }
 
