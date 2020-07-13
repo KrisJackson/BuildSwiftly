@@ -112,7 +112,7 @@ extension BSMessaging {
                     /// Result
                     if snapshot.documents.isEmpty {
                         
-                        completion(false, nil, Error.error(type: .none, text: "There are no channels for to this set of users."))
+                        completion(false, nil, Error.error(type: .none, text: "There are no channels for this set of users."))
                         
                     } else {
                         
