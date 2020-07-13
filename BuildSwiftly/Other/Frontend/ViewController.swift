@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        testSendMessage()
     }
     
     private func testSendMessage() {
@@ -25,9 +26,9 @@ class ViewController: UIViewController {
         }
         
         /// Prepare message to be sent
-        var message = Message()
+        var message = BSMessage()
         message.channelID = "abc"
-        message.media = media
+        message.media = nil
         message.replyToUID = "kris"
         message.senderUID = "kasd"
         message.text = "Test message"

@@ -18,6 +18,7 @@ import Foundation
  sub-components: `MessageHandler` and `Channel`. A channel can be thought of as a 'chat room'. Each `Channel` contains metadata about the chat room that can be easily and quickly accessed. The `MessageHandler` contains functions that pertains to an individual message to be sent in the channel.
  - This component assumes that the client is using Firebase Auth, Firebase Storage, and Cloud Firestore, and has already set up those tools as needed.
  - Messaging component allows both direct messages and group messages
+ - Sending a message requires the channel ID. If the channel ID is not known, use `BSMessaging.Channels.doesExist(users: [String])`
  
  */
 class BSMessaging {
@@ -30,7 +31,7 @@ class BSMessaging {
     class MessageHandler {
         
         private var error: Error!
-        private var messageBuf: Message!
+        private var messageBuf: BSMessage!
         private var messageRef: DocumentReference!
         
         /**
@@ -39,7 +40,7 @@ class BSMessaging {
             - Parameter message: Message that a user intends to send within a channel. `Message.messageID`, `Message.timestamp`, and `Message.mediaID` is assigned by the API, so client should pass `nil` or leave fields empty when passing through `MessageHandler`.
          
          */
-        init(message: Message) {
+        init(message: BSMessage) {
             
             messageBuf = message
             messageRef = Firestore.firestore().collection(String.Database.Messaging.collectionID).document()
@@ -212,10 +213,13 @@ class BSMessaging {
             let timestamp = NSDate().timeIntervalSince1970
             messageBuf.timestamp = timestamp
             
+            let sortedUsers = messageBuf.users.sorted()
+            
             /// Send data to Firestore
             messageRef.setData([
-                
-                String.Database.Messaging.users: messageBuf.users.sorted(), /// **Must be sorted**. Sorted users serves as another way to uniquely identify channel if client doesn't know Channel ID
+    
+                String.Database.Messaging.users: sortedUsers,       /// **Must be sorted**. Sorted users serves as another way to uniquely identify channel if client doesn't know Channel ID
+                String.Database.Messaging.userString: "\(sortedUsers)",
                 String.Database.Messaging.text: messageBuf.text ?? NSNull(),
                 String.Database.Messaging.media: messageBuf.mediaID ?? NSNull(),
                 String.Database.Messaging.sender: messageBuf.senderUID ?? NSNull(),

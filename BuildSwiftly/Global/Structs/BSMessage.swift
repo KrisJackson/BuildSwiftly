@@ -13,7 +13,7 @@ import Foundation
  Struct contains data that is being within the channel and data to direct the message to the correct channel.
  
 */
-struct Message {
+struct BSMessage {
     
     /// The unique identifier of the message document.
     var messageID: String!
