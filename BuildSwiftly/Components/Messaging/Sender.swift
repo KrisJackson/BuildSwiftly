@@ -15,7 +15,7 @@ import Foundation
  In-app messaging component that facilitates the exchange of data and text sent between users.
  
  - There are many uses for a messaging component within an app. In-app messaging allows users to communicate and send data to each other over the network. To effectively allow users to communicate between one another, this component is organized into two main
- sub-components: `MessageHandler` and `Channel`. A channel can be thought of as a 'chat room'. Each `Channel` contains metadata about the chat room that can be easily and quickly accessed. The `MessageHandler` contains functions that pertains to an individual message to be sent in the channel.
+ sub-components: `Sender` and `Channel`. A channel can be thought of as a 'chat room'. Each `Channel` contains metadata about the chat room that can be easily and quickly accessed. The `Sender` contains functions that pertains to an individual message to be sent in the channel.
  - This component assumes that the client is using Firebase Auth, Firebase Storage, and Cloud Firestore, and has already set up those tools as needed.
  - Messaging component allows both direct messages and group messages
  - Sending a message requires the channel ID. If the channel ID is not known, use `BSMessaging.Channels.doesExist(users: [String])`
@@ -28,16 +28,17 @@ class BSMessaging {
      Contains functions that pertains to an individual message to be sent in the channel
      
      */
-    class MessageHandler {
+    class Sender {
         
         private var error: Error!
         private var messageBuf: BSMessage!
         private var messageRef: DocumentReference!
         
+        
         /**
             Constructor prepares message to be sent and checks that message contains values for required fields.
          
-            - Parameter message: Message that a user intends to send within a channel. `Message.messageID`, `Message.timestamp`, and `Message.mediaID` is assigned by the API, so client should pass `nil` or leave fields empty when passing through `MessageHandler`.
+            - Parameter message: Message that a user intends to send within a channel. `Message.messageID`, `Message.timestamp`, and `Message.mediaID` is assigned by the API, so client should pass `nil` or leave fields empty when passing through `Sender`.
          
          */
         init(message: BSMessage) {
@@ -192,7 +193,7 @@ class BSMessaging {
                 if let error = error {
                     completion(Error.error(type: .system, text: error.localizedDescription))
                 } else {
-                    completion(Error.error(type: .none, text: "Message has successfully been sent!"))
+                    completion(Error.error(type: .none, text: "Channel has been updated!"))
                 }
                 
             }
@@ -218,7 +219,7 @@ class BSMessaging {
             /// Send data to Firestore
             messageRef.setData([
     
-                String.Database.Messaging.users: sortedUsers,       /// **Must be sorted**. Sorted users serves as another way to uniquely identify channel if client doesn't know Channel ID
+                String.Database.Messaging.users: sortedUsers,   /// **Must be sorted**. Sorted users serves as another way to uniquely identify channel if client doesn't know Channel ID
                 String.Database.Messaging.userString: "\(sortedUsers)",
                 String.Database.Messaging.text: messageBuf.text ?? NSNull(),
                 String.Database.Messaging.media: messageBuf.mediaID ?? NSNull(),
@@ -247,5 +248,9 @@ class BSMessaging {
                 
             }
         }
-    }
-}
+        
+        
+        
+    } /* Sender - END */
+    
+} /* BSMessaging - END */

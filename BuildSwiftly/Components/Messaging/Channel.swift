@@ -32,13 +32,14 @@ extension BSMessaging {
          - Parameter error: Contains a message and the error type upon completion.
          
          */
-        func create(withUsersIDs users: [String], named: String? = nil, authorID author: String? = Auth.auth().currentUser?.uid ?? nil, _ completion: @escaping (_ error: Error) -> Void) {
+        static func create(withUsersIDs users: [String], named: String? = nil, authorID author: String? = Auth.auth().currentUser?.uid ?? nil, _ completion: @escaping (_ error: Error) -> Void) {
             
             let ChannelCollection = Firestore.firestore().collection(String.Database.Channel.collectionID)
             let newChannelID: String = ChannelCollection.document().documentID
             
             log.debug("Creating new channel with ID \(newChannelID)...")
             
+            /// Channel can only be created if there is a valid user
             guard let author = author else {
                 completion(Error.error(type: .weak, text: "A channel cannot be created without an author."))
                 return
@@ -54,32 +55,52 @@ extension BSMessaging {
             /// we must sort the array and save as a string.
             let sortedUsers = u.sorted()
             
-            ChannelCollection.document(newChannelID).setData([
+            /// Check if the channel already exists
+            doesChannelExist(withUsers: sortedUsers) { (exist, _, error) in
                 
-                String.Database.Channel.id: newChannelID,                                   // Unique ID and document name of the channel being created
-                String.Database.Channel.author: author,                                     // Unique ID of the channel creater
-                String.Database.Channel.admin: [author],                                    // List of admin users that have control of the channel
-                String.Database.Channel.userString: "\(sortedUsers)",                       // Sorted list of users as a string
-                String.Database.Channel.users: sortedUsers,                                 // List of all users in the channel. Must be SORTED to uniquely identifY without channel ID
-                String.Database.Channel.created: NSDate().timeIntervalSince1970,            // Timestamp that the channel was created
-                
-                String.Database.Channel.lastMedia: NSNull(),                                // Last message: Id of media sent. Null if no message
-                String.Database.Channel.lastSender: NSNull(),                               // Last message: User to send message. Null if no message
-                String.Database.Channel.lastText: NSNull(),                                 // Last message: Text of last message. Null if no message
-                String.Database.Channel.lastTimestamp: NSNull(),                            // Last message: Timestamp that last message was sent. Null if no message
-                String.Database.Channel.lastReplyTo: NSNull(),                              // Last message: User of last message. Null if message was to user in channel
-            
-            ], merge: true) { (error) in
-                
-                guard let error = error else {
-                    completion(Error.error(type: .none, text: "Channel \(newChannelID) has been created successfully!"))
+                /// Check if there is an error
+                guard let exist = exist else {
+                    completion(error)
                     return
                 }
                 
-                completion(Error.error(type: .system, text: error.localizedDescription))
-                return
+                /// Channel exists for the given set of users
+                if exist {
+                    completion(Error.error(type: .weak, text: error.text ?? "Channel already exists."))
+                    return
+                }
+                
+                /// Channel does not exist. Create new channel
+                ChannelCollection.document(newChannelID).setData([
+                     
+                     /// Metadata about the channel
+                     String.Database.Channel.id: newChannelID,                                   // Unique ID and document name of the channel being created
+                     String.Database.Channel.author: author,                                     // Unique ID of the channel creater
+                     String.Database.Channel.admin: [author],                                    // List of admin users that have control of the channel
+                     String.Database.Channel.userString: "\(sortedUsers)",                       // Sorted list of users as a string
+                     String.Database.Channel.users: sortedUsers,                                 // List of all users in the channel. Must be SORTED to uniquely identifY without channel ID
+                     String.Database.Channel.created: NSDate().timeIntervalSince1970,            // Timestamp that the channel was created
+                     
+                     /// Data from last message sent in channel
+                     String.Database.Channel.lastMedia: NSNull(),                                // Last message: Id of media sent. Null if no message
+                     String.Database.Channel.lastSender: NSNull(),                               // Last message: User to send message. Null if no message
+                     String.Database.Channel.lastText: NSNull(),                                 // Last message: Text of last message. Null if no message
+                     String.Database.Channel.lastTimestamp: NSNull(),                            // Last message: Timestamp that last message was sent. Null if no message
+                     String.Database.Channel.lastReplyTo: NSNull(),                              // Last message: User of last message. Null if message was to user in channel
+                 
+                 ], merge: true) { (error) in
+                     
+                     guard let error = error else {
+                         completion(Error.error(type: .none, text: "Channel \(newChannelID) has been created successfully!"))
+                         return
+                     }
+                     
+                     completion(Error.error(type: .system, text: error.localizedDescription))
+                     return
+                 }
             }
         }
+        
         
         /**
         
@@ -92,7 +113,7 @@ extension BSMessaging {
         - Parameter error: Contains a message and the error type upon completion.
          
          */
-        func doesChannelExist(withUsers users: [String], _ completion: @escaping (_ exist: Bool?, _ channel: BSChannel?, _ error: Error) -> Void) {
+        static func doesChannelExist(withUsers users: [String], _ completion: @escaping (_ exist: Bool?, _ channel: BSChannel?, _ error: Error) -> Void) {
             Firestore.firestore().collection(String.Database.Channel.collectionID)
                 .whereField(String.Database.Channel.userString, isEqualTo: "\(users.sorted())")
                 .getDocuments { (snapshot, error) in
@@ -118,6 +139,7 @@ extension BSMessaging {
                         
                         let data: [String: Any] = snapshot.documents[0].data()
                         
+                        /// Saves the channel data to be escaped
                         let channel: BSChannel = BSChannel()
                         channel.channelID = snapshot.documents[0].documentID
                         channel.admin = data[String.Database.Channel.admin] as? [String] ?? nil
@@ -131,10 +153,11 @@ extension BSMessaging {
                         channel.users = data[String.Database.Channel.users] as? [String] ?? nil
                         
                         completion(true, channel, Error.error(type: .none, text: "A channel exists for the set of users."))
+                        
                     }
             }
         }
         
-        
-    }
-}
+    } /* Channel - END */
+    
+} /* BSMessaging - END */

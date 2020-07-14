@@ -21,10 +21,11 @@
 		186F677A24B9E1CC0065D2B6 /* image1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 186F677724B9E1CC0065D2B6 /* image1.jpg */; };
 		186F677E24BA929F0065D2B6 /* BSMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186F677D24BA929F0065D2B6 /* BSMessage.swift */; };
 		186F678024BC962C0065D2B6 /* BSChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186F677F24BC962C0065D2B6 /* BSChannel.swift */; };
-		1882157524B5106A003D4DA8 /* Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882157424B5106A003D4DA8 /* Messaging.swift */; };
+		1882157524B5106A003D4DA8 /* Sender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882157424B5106A003D4DA8 /* Sender.swift */; };
 		1882157724B514CE003D4DA8 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882157624B514CE003D4DA8 /* Channel.swift */; };
 		1882157A24B58E5E003D4DA8 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882157924B58E5E003D4DA8 /* Object.swift */; };
 		1882157D24B62DCE003D4DA8 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882157C24B62DCE003D4DA8 /* Database.swift */; };
+		1892FEC724BD05A30094A764 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1892FEC624BD05A30094A764 /* Data.swift */; };
 		18A8B6B724A2802A008878F3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B6B624A2802A008878F3 /* SceneDelegate.swift */; };
 		18A8B6B924A2802A008878F3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8B6B824A2802A008878F3 /* ViewController.swift */; };
 		18A8B6BC24A2802A008878F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18A8B6BA24A2802A008878F3 /* Main.storyboard */; };
@@ -79,10 +80,11 @@
 		186F677724B9E1CC0065D2B6 /* image1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image1.jpg; sourceTree = "<group>"; };
 		186F677D24BA929F0065D2B6 /* BSMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSMessage.swift; sourceTree = "<group>"; };
 		186F677F24BC962C0065D2B6 /* BSChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSChannel.swift; sourceTree = "<group>"; };
-		1882157424B5106A003D4DA8 /* Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messaging.swift; sourceTree = "<group>"; };
+		1882157424B5106A003D4DA8 /* Sender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sender.swift; sourceTree = "<group>"; };
 		1882157624B514CE003D4DA8 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		1882157924B58E5E003D4DA8 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		1882157C24B62DCE003D4DA8 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		1892FEC624BD05A30094A764 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		18A8B6B124A2802A008878F3 /* BuildSwiftly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuildSwiftly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A8B6B624A2802A008878F3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		18A8B6B824A2802A008878F3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -220,8 +222,9 @@
 		1882157324B51059003D4DA8 /* Messaging */ = {
 			isa = PBXGroup;
 			children = (
-				1882157424B5106A003D4DA8 /* Messaging.swift */,
+				1882157424B5106A003D4DA8 /* Sender.swift */,
 				1882157624B514CE003D4DA8 /* Channel.swift */,
+				1892FEC624BD05A30094A764 /* Data.swift */,
 			);
 			path = Messaging;
 			sourceTree = "<group>";
@@ -650,9 +653,10 @@
 				18A8B70824A2845C008878F3 /* UserStore.swift in Sources */,
 				1882157A24B58E5E003D4DA8 /* Object.swift in Sources */,
 				186F676624B7FE090065D2B6 /* FirFile.swift in Sources */,
+				1892FEC724BD05A30094A764 /* Data.swift in Sources */,
 				18A8B70724A2845C008878F3 /* CurrentUser.swift in Sources */,
 				18A8B6B724A2802A008878F3 /* SceneDelegate.swift in Sources */,
-				1882157524B5106A003D4DA8 /* Messaging.swift in Sources */,
+				1882157524B5106A003D4DA8 /* Sender.swift in Sources */,
 				186F677E24BA929F0065D2B6 /* BSMessage.swift in Sources */,
 				1882157D24B62DCE003D4DA8 /* Database.swift in Sources */,
 				18A8B70924A2845C008878F3 /* SignUp.swift in Sources */,
