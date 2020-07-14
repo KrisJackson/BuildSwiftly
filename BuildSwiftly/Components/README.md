@@ -6,7 +6,7 @@ This folder contains generic component APIs to be called by client programs and 
 
 ## Contributing
 
-There is no particular structure that is required, however, I *require* any new components to be placed in a separate folder and highly encourage adding an *optional* README to the root if necessary.
+There is no particular structure that is required, however, I *require* any new components to be placed in a separate folders and *require* a README to the root folder of the component.
 
 ## Components
 
