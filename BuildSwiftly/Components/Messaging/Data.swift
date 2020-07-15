@@ -77,6 +77,7 @@ extension BSMessaging {
             
         }
         
+        
         /**
          
           Populates data with messages in a chanel starting at the last document retrieved. The number of messages in the array will not exeed the limit, and all messages are ordered by the timestamp. This function uses the channelID to retrieve messages in an existing channel.
@@ -106,7 +107,9 @@ extension BSMessaging {
                 .order(by: String.Database.Messaging.timestamp, descending: false)
             
             /// If `limit == 0` get all messages in the given query
-            if limit > 0 { messagesRef = messagesRef.limit(to: limit) }
+            if limit > 0 {
+                messagesRef = messagesRef.limit(to: limit)
+            }
             
             /// If value exists, start at last document
             if let lastDocument = lastDocument {
@@ -126,9 +129,9 @@ extension BSMessaging {
                     return
                 }
                 
-                self.populateMessageData(snapshot: snapshot) { (error) in
-                    completion(error)
-                }
+                self.populateMessageData(snapshot: snapshot)
+                
+                completion(Error.error(type: .none, text: "Message data have been collected!"))
                 
             }
             
@@ -154,8 +157,14 @@ extension BSMessaging {
             
         }
         
-        
-        private func populateMessageData(snapshot: QuerySnapshot, _ completion: @escaping (_ error: Error) -> Void) {
+        /**
+         
+         PRIVATE: Collects messages and appends to `data`. Also saves the last document collected.
+         
+         - Parameter snapshot: The collection messages after the query has been performed
+         
+         */
+        private func populateMessageData(snapshot: QuerySnapshot) {
             
             var last: DocumentSnapshot!
             for document in snapshot.documents {
