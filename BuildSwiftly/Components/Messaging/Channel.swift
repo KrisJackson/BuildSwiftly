@@ -145,7 +145,7 @@ extension BSMessaging {
                         channel.admin = data[String.Database.Channel.admin] as? [String] ?? nil
                         channel.author = data[String.Database.Channel.author] as? String ?? nil
                         channel.created = data[String.Database.Channel.created] as? Double ?? nil
-                        channel.lastMedia = data[String.Database.Channel.lastMedia] as? String ?? nil
+                        channel.lastMedia = data[String.Database.Channel.lastMedia] as? [String] ?? nil
                         channel.lastReplyTo = data[String.Database.Channel.lastReplyTo] as? String ?? nil
                         channel.lastSender = data[String.Database.Channel.lastSender] as? String ?? nil
                         channel.lastText = data[String.Database.Channel.lastText] as? String ?? nil
@@ -155,6 +155,40 @@ extension BSMessaging {
                         completion(true, channel, Error.error(type: .none, text: "A channel exists for the set of users."))
                         
                     }
+            }
+        }
+        
+        
+        /**
+         
+         Updates the channel with the lastest message.
+         - Parameter completion: Escapes with `Error`
+         - Parameter error: Contains error type (`ErrorType.none` if no errors) and message that can be displayed in the UI if needed.
+         
+         */
+        static func update(withLatest messageBuf: BSMessage, _ completion: @escaping (Error) -> Void) {
+            
+            /// Reference to the channel being
+            let channelRef = Firestore.firestore()
+                .collection(String.Database.Channel.collectionID)
+                .document(messageBuf.channelID)
+            
+            channelRef.setData([
+            
+                String.Database.Channel.lastText: messageBuf.text ?? NSNull(),
+                String.Database.Channel.lastMedia: messageBuf.mediaID ?? NSNull(),
+                String.Database.Channel.lastSender: messageBuf.senderUID ?? NSNull(),
+                String.Database.Channel.lastReplyTo: messageBuf.replyToUID ?? NSNull(),
+                String.Database.Channel.lastTimestamp: messageBuf.timestamp ?? NSDate().timeIntervalSince1970,
+            
+            ], merge: true) { (error) in
+                
+                if let error = error {
+                    completion(Error.error(type: .system, text: error.localizedDescription))
+                } else {
+                    completion(Error.error(type: .none, text: "Channel has been updated!"))
+                }
+                
             }
         }
         

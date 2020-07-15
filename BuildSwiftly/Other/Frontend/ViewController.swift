@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        testSendMessage()
+        
     }
     
     private func testSendMessage() {
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         message.text = "Test message"
         message.users = ["asdfa", "asfasd"]
         
-        let messaging = BSMessaging.MessageHandler(message: message)
+        let messaging = BSMessaging.Sender(message: message)
         messaging.send { (error) in
             print("🟢 " + (error.text ?? "No error message"))
         }

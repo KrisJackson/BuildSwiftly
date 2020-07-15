@@ -8,14 +8,14 @@
 
 import Foundation
 
-class BSChannel {
+struct BSChannel {
     
     var channelID: String!
     var author: String!
     var admin: [String]!
     var users: [String]!
     var created: Double!
-    var lastMedia: String!
+    var lastMedia: [String]!
     var lastSender: String!
     var lastText: String!
     var lastTimestamp: Double!

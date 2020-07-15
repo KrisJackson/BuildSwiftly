@@ -119,24 +119,23 @@ extension BSMessaging {
                 messagesRef = messagesRef.start(afterDocument: lastDocument)
             }
             
-            /// Populates `data` with messages
-            messagesRef.addSnapshotListener { (snapshot, error) in /// Listener allows for real-time updates
+            /// Populate data with messages
+            self.populateData(fromReference: messagesRef) { (document) -> Any in
                 
-                if let error = error {
-                    completion(Error.error(type: .system, text: error.localizedDescription))
-                    return
-                }
-                
-                guard let snapshot = snapshot else {
-                    completion(Error.error(type: .none, text: "No messages to collect."))
-                    return
-                }
-                
-                self.populateMessageData(snapshot: snapshot)
-                
-                completion(Error.error(type: .none, text: "Message data have been collected!"))
+                var message = BSMessage()
+                message.messageID = document.documentID
+                message.channelID = document.data()[String.Database.Messaging.channelID] as? String
+                message.mediaID = document.data()[String.Database.Messaging.media] as? [String]
+                message.replyToUID = document.data()[String.Database.Messaging.replyTo] as? String
+                message.senderUID = document.data()[String.Database.Messaging.sender] as? String
+                message.text = document.data()[String.Database.Messaging.text] as? String
+                message.timestamp = document.data()[String.Database.Messaging.timestamp] as? Double
+                message.users = document.data()[String.Database.Messaging.users] as? [String]
+                return message
                 
             }
+                
+            completion(Error.error(type: .none, text: "Message data has been collected!"))
             
         }
         
@@ -155,42 +154,71 @@ extension BSMessaging {
          
          */
         func get(forUser user: String, limit: Int = 0, _ completion: @escaping (_ error: Error) -> Void) {
-            // MARK: Handle errors (if .messages was passed and this function was called)
-
             
+            // MARK: Handle errors (if .messages was passed and this function was called)
+            
+            /// Reference to the messages pointing to a given channelID
+            var channelsRef = Firestore.firestore().collection(String.Database.Messaging.collectionID)
+                .whereField(String.Database.Channel.users, arrayContains: user)
+                .order(by: String.Database.Messaging.timestamp, descending: false)
+            
+            if limit > 0 {
+                channelsRef = channelsRef.limit(to: limit)
+            }
+            
+            if let lastDocument = lastDocument {
+                channelsRef = channelsRef.start(afterDocument: lastDocument)
+            }
+            
+            /// Populate data with channels
+            self.populateData(fromReference: channelsRef) { (document) -> Any in
+                
+                var channel = BSChannel()
+                channel.channelID = document.documentID
+                channel.admin = document.data()[String.Database.Channel.admin] as? [String]
+                channel.author = document.data()[String.Database.Channel.author] as? String
+                channel.created = document.data()[String.Database.Channel.created] as? Double
+                channel.lastMedia = document.data()[String.Database.Channel.lastMedia] as? [String]
+                channel.lastReplyTo = document.data()[String.Database.Channel.lastReplyTo] as? String
+                channel.lastSender = document.data()[String.Database.Channel.lastSender] as? String
+                channel.lastText = document.data()[String.Database.Channel.lastText] as? String
+                channel.lastTimestamp = document.data()[String.Database.Channel.lastTimestamp] as? Double
+                channel.users = document.data()[String.Database.Channel.users] as? [String]
+                return channel
+                
+            }
+            
+            completion(Error.error(type: .none, text: "Channel data has been collected!"))
         }
         
         
         /**
          
-         PRIVATE: Collects messages and appends to `data`. Also saves the last document collected.
+         PRIVATE: Retrieves data and appends to `data`. Also saves the last document collected.
          
          - Parameter snapshot: The collection messages after the query has been performed
+         - Parameter completion: Escapes with document in the query
+         - Parameter document: Document containing data from the query. Client should extract and return data in desired format.
          
          */
-        private func populateMessageData(snapshot: QuerySnapshot) {
+        
+        private func populateData(fromReference ref: Query, _ completion: @escaping (_ document: QueryDocumentSnapshot) -> Any) {
             
-            var last: DocumentSnapshot!
-            for document in snapshot.documents {
-            
-                var message = BSMessage()
-                message.messageID = document.documentID
-                message.channelID = document.data()[String.Database.Messaging.channelID] as? String
-                message.mediaID = document.data()[String.Database.Messaging.media] as? [String]
-                message.replyToUID = document.data()[String.Database.Messaging.replyTo] as? String
-                message.senderUID = document.data()[String.Database.Messaging.sender] as? String
-                message.text = document.data()[String.Database.Messaging.text] as? String
-                message.timestamp = document.data()[String.Database.Messaging.timestamp] as? Double
-                message.users = document.data()[String.Database.Messaging.users] as? [String]
-            
-                data.append(message)
+            /// Populates `data` with messages
+            ref.addSnapshotListener { (snapshot, error) in /// **Listener** allows for real-time updates
                 
-                last = document
+                /// If error, data should just be empty
+                if error != nil { return }
+                guard let snapshot = snapshot else { return }
+                
+                /// Iterate through every document
+                for document in snapshot.documents {
+                    self.data.append(completion(document))
+                    self.lastDocument = document
+                }
                 
             }
-            
-            self.lastDocument = last
-            
+        
         }
         
     } /* Data - END */
