@@ -51,7 +51,7 @@ extension BSMessaging {
           Populates data with messages in a chanel starting at the last document retrieved. The number of messages in the array will not exeed the limit, and all messages are ordered by the timestamp. This function should be called if the client does not have a channel ID, but wishes to retrieve messages in an existing channel.
          
          - Parameter users: The group of users to uniquely identify the channel
-         - Parameter limit: The maximum number of data to be added to the array
+         - Parameter limit: The maximum number of data to be added to the array. If **limit == 0** add all data to array .
          - Parameter completion: Escapes with `Error`
          - Parameter error: Contains a message and the error type upon completion
          
@@ -94,7 +94,7 @@ extension BSMessaging {
           Populates data with messages in a chanel starting at the last document retrieved. The number of messages in the array will not exeed the limit, and all messages are ordered by the timestamp. This function uses the channelID to retrieve messages in an existing channel.
          
          - Parameter channelID: The unique identifier of an existing channel
-         - Parameter limit: The maximum number of data to be added to the array
+         - Parameter limit: The maximum number of data to be added to the array. If **limit == 0** add all data to array .
          - Parameter completion: Escapes with `Error`
          - Parameter error: Contains a message and the error type upon completion
          
@@ -111,7 +111,6 @@ extension BSMessaging {
                 .whereField(String.Database.Messaging.channelID, isEqualTo: channelID)
                 .order(by: String.Database.Messaging.timestamp, descending: false)
             
-            /// If `limit == 0` get all messages in the given query
             if limit > 0 {
                 messagesRef = messagesRef.limit(to: limit)
             }
