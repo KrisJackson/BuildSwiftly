@@ -23,7 +23,7 @@ extension BSMessaging {
         var type: DataType!
         
         /// Last document retrieved by `get()`
-        private var lastDocument: DocumentReference!
+        private var lastDocument: DocumentSnapshot!
         
         
         /**
@@ -91,6 +91,7 @@ extension BSMessaging {
          
          */
         func get(forChannel channelID: String, limit: Int = 0, _ completion: @escaping (_ error: Error) -> Void) {
+            
             // MARK: Handle errors (if .channel was passed and this function was called)
             
             /// Handles empty channelID
@@ -99,20 +100,36 @@ extension BSMessaging {
                 return
             }
             
-            /// Populates data with more messages starting at the last document.
+            /// Reference to the messages pointing to a given channelID
+            var messagesRef = Firestore.firestore().collection(String.Database.Messaging.collectionID)
+                .whereField(String.Database.Messaging.channelID, isEqualTo: channelID)
+                .order(by: String.Database.Messaging.timestamp, descending: false)
+            
+            /// If `limit == 0` get all messages in the given query
+            if limit > 0 { messagesRef = messagesRef.limit(to: limit) }
+            
+            /// If value exists, start at last document
             if let lastDocument = lastDocument {
+                messagesRef = messagesRef.start(afterDocument: lastDocument)
+            }
+            
+            /// Populate data with messages
+            messagesRef.addSnapshotListener { (snapshot, error) in /// Listener allows for real-time updates
                 
-                /// Start from the beginning if last document is not given
-                populateMessageData(withLastDocument: lastDocument, limit: limit) { (error) in
+                if let error = error {
+                    completion(Error.error(type: .system, text: error.localizedDescription))
+                    return
+                }
+                
+                guard let snapshot = snapshot else {
+                    completion(Error.error(type: .none, text: "No messages to collect."))
+                    return
+                }
+                
+                self.populateMessageData(snapshot: snapshot) { (error) in
                     completion(error)
                 }
                 
-            } else {
-                
-                /// Pick up where left off
-                populateMessageData(limit: limit) { (error) in
-                    completion(error)
-                }
             }
             
         }
@@ -138,11 +155,32 @@ extension BSMessaging {
         }
         
         
-        private func populateMessageData(limit: Int, _ completion: @escaping (_ error: Error) -> Void) {
+        private func populateMessageData(snapshot: QuerySnapshot, _ completion: @escaping (_ error: Error) -> Void) {
             
-        }
-        
-        private func populateMessageData(withLastDocument: DocumentReference, limit: Int, _ completion: @escaping (_ error: Error) -> Void) {
+            var last: DocumentSnapshot!
+            for document in snapshot.documents {
+                
+                /// Get message
+                var message = BSMessage()
+                message.messageID = document.documentID
+                message.channelID = document.data()[String.Database.Messaging.channelID] as? String
+                message.mediaID = document.data()[String.Database.Messaging.media] as? [String]
+                message.replyToUID = document.data()[String.Database.Messaging.replyTo] as? String
+                message.senderUID = document.data()[String.Database.Messaging.sender] as? String
+                message.text = document.data()[String.Database.Messaging.text] as? String
+                message.timestamp = document.data()[String.Database.Messaging.timestamp] as? Double
+                message.users = document.data()[String.Database.Messaging.users] as? [String]
+                
+                /// Store message
+                data.append(message)
+                
+                /// Record each document
+                last = document
+                
+            }
+            
+            /// Saves the last document
+            self.lastDocument = last
             
         }
     }
