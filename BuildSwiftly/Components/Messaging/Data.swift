@@ -192,6 +192,7 @@ extension BSMessaging {
             self.lastDocument = last
             
         }
-    }
+        
+    } /* Data - END */
     
-}
+} /* BSMessaging - END */
