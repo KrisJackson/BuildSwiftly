@@ -30,7 +30,7 @@ class BSMessaging {
      */
     class Sender {
         
-        private var error: Error!
+        private var error: Error?
         private var messageBuf: BSMessage!
         private var messageRef: DocumentReference!
         
@@ -47,13 +47,13 @@ class BSMessaging {
             messageBuf.messageID = messageRef.documentID
             
             guard message.channelID != nil else {
-                error = Error.error(type: .weak, text: "Message point to a channel.")
+                error = BSError(description: "Message must point to a channel.")
                 return
             }
             
             /// Checks that `Message` has a sender
             guard message.senderUID != nil else {
-                error = Error.error(type: .weak, text: "Message must contain a sender.")
+                error = BSError(description: "Message must contain a sender.")
                 return
             }
             
@@ -62,14 +62,14 @@ class BSMessaging {
                 
                 /// Checks that the recipient array contains at least one user
                 if users.isEmpty {
-                    error = Error.error(type: .weak, text: "Message must contain at least one recipient.")
+                    error = BSError(description: "Message must contain at least one recipient.")
                     return
                 }
                 
             } else {
                 
                 /// Recipient array does not exist
-                error = Error.error(type: .weak, text: "Message must contain at least one recipient.")
+                error = BSError(description: "Message must contain at least one recipient.")
                 return
                 
             }
@@ -79,7 +79,7 @@ class BSMessaging {
                 
                 let trimText = text.trimmingCharacters(in: .whitespacesAndNewlines) // Remove extra whitespace
                 if trimText.isEmpty && (message.mediaID ?? nil) == nil {
-                    error = Error.error(type: .weak, text: "No message has been given.")
+                    error = BSError(description: "No message has been given.")
                     return
                 }
                 
@@ -87,7 +87,7 @@ class BSMessaging {
                 
                 /// Media and text cannot both be empty
                 if (message.mediaID ?? nil) == nil {
-                    error = Error.error(type: .weak, text: "No message has been given.")
+                    error = BSError(description: "No message has been given.")
                     return
                 }
                 
@@ -101,16 +101,16 @@ class BSMessaging {
             Sends a message to the channel.
          
             - Parameter completion: Escapes with `Error`.
-            - Parameter error: Contains error type (`ErrorType.none` if no errors) and message that can be displayed in the UI if needed.
+            - Parameter error: Contains error type (`nil` if no errors) and message that can be displayed in the UI if needed.
      
         */
-        func send(_ completion: @escaping (_ error: Error) -> Void) {
+        func send(_ completion: @escaping (_ error: Error?) -> Void) {
             
-            log.debug("Preparing to send message...")
+            Logging.log(type: .info, text: "Preparing to send message...")
             
             /// Checks for errors
             if let error = error {
-                completion(Error.error(type: error.type, text: error.text))
+                completion(error)
                 return
             }
             
@@ -129,33 +129,30 @@ class BSMessaging {
                 /// Upload media to Firebase Storage
                 /// If media is successfully stored, send message to Firestore.
                 Batch.upload(media: batchMedia, atPath: Storage.storage().reference(withPath: "\(String.Database.Messaging.collectionID)/")) { (error) in
-                    switch error.type {
-                    case .none:
+                    
+                    if let error = error {
+                        /// Batch upload did not success. Terminate and complete with error
+                        completion(error)
+                        return
+                    }
+                    
+                                            /// Sends text if exists
+                    if let _ = self.messageBuf.text {
                         
-                        /// Sends text if exists
-                        if let _ = self.messageBuf.text {
-                            
-                            /// Message contains text
-                            self.sendMessage(toRef: self.messageRef) { (error) in
-                                completion(error)
-                                return
-                            }
-                            
-                        } else {
-                            
-                            /// Message does not contain text
+                        /// Message contains text
+                        self.sendMessage(toRef: self.messageRef) { (error) in
                             completion(error)
                             return
-                            
                         }
                         
-                    default:
+                    } else {
                         
-                        /// Batch upload did not success. Terminate and complete with error
+                        /// Message does not contain text
                         completion(error)
                         return
                         
                     }
+                    
                 }
                 
             } else {
@@ -178,7 +175,7 @@ class BSMessaging {
          - Parameter error: Contains error type (`ErrorType.none` if no errors) and message that can be displayed in the UI if needed.
          
          */
-        private func sendMessage(toRef messageRef: DocumentReference, _ completion: @escaping (_ error: Error) -> Void) {
+        private func sendMessage(toRef messageRef: DocumentReference, _ completion: @escaping (_ error: Error?) -> Void) {
             
             /// Set the time sent
             let timestamp = NSDate().timeIntervalSince1970
@@ -203,11 +200,11 @@ class BSMessaging {
                 
                 if let error = error {
                     
-                    completion(Error.error(type: .system, text: error.localizedDescription))
+                    completion(error)
                     
                 } else {
                     
-                    completion(Error.error(type: .none, text: "Message has successfully been sent!"))
+                    completion(nil)
                     
                     /// Update channel w latest message
                     Channel.update(withLatest: self.messageBuf) { (error) in
@@ -221,6 +218,6 @@ class BSMessaging {
         
         
         
-    } /* Sender - END */
+    }
     
-} /* BSMessaging - END */
+} 

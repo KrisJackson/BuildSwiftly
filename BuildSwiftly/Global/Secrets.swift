@@ -8,4 +8,4 @@
 
 import Foundation
 
-let FCM_API_KEY: String = "<#Firebase Cloud Messaging API Key#>"
+let FCM_SERVER_KEY: String = "<#Firebase Cloud Messaging API Key#>"

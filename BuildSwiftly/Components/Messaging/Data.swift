@@ -59,7 +59,7 @@ extension BSMessaging {
          - The array uses a listener to populate the data, and will check periodically for new messages.
          
          */
-        func get(forUsers users: [String], limit: Int = 0, _ completion: @escaping (_ error: Error) -> Void) {
+        func get(forUsers users: [String], limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
             
             // MARK: Handle errors (if .channel was passed and this function was called)
             
@@ -75,7 +75,8 @@ extension BSMessaging {
                 
                 /// Handles empty channelID
                 if (channel.channelID ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    completion(Error.error(type: .weak, text: "ChannelID cannot be empty."))
+                    Logging.log(type: .warning, text: "ChannelID cannot be empty.")
+                    completion(BSError(description: "ChannelID cannot be empty."))
                     return
                 }
                 
@@ -102,7 +103,7 @@ extension BSMessaging {
          - The array uses a listener to populate the data, and will check periodically for new messages.
          
          */
-        func get(forChannel channelID: String, limit: Int = 0, _ completion: @escaping (_ error: Error) -> Void) {
+        func get(forChannel channelID: String, limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
             
             // MARK: Handle errors (if .channel was passed and this function was called)
             
@@ -135,7 +136,8 @@ extension BSMessaging {
                 
             }
                 
-            completion(Error.error(type: .none, text: "Message data has been collected!"))
+            Logging.log(type: .debug, text: "Message data has been collected!")
+            completion(nil)
             
         }
         
@@ -153,7 +155,7 @@ extension BSMessaging {
          - The array uses a listener to populate the data, and will check periodically for new messages.
          
          */
-        func get(forUser user: String, limit: Int = 0, _ completion: @escaping (_ error: Error) -> Void) {
+        func get(forUser user: String, limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
             
             // MARK: Handle errors (if .messages was passed and this function was called)
             
@@ -188,7 +190,8 @@ extension BSMessaging {
                 
             }
             
-            completion(Error.error(type: .none, text: "Channel data has been collected!"))
+            Logging.log(type: .debug, text: "Channel data has been collected.")
+            completion(nil)
         }
         
         
@@ -221,6 +224,6 @@ extension BSMessaging {
         
         }
         
-    } /* Data - END */
+    }
     
-} /* BSMessaging - END */
+} 

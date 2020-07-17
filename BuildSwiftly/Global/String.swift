@@ -77,20 +77,24 @@ extension String {
 
 // Current User API
 extension String {
-    
-    class CurrentUser {
-        
-        struct doesExist {
-            static let logDoesNotExist = "User does not exist."
-            static let logExists = "User exists with id "
+    class BSAuth {
+        class CurrentUser {
+            
+            struct doesExist {
+                static let logDoesNotExist = "User does not exist."
+                static let logExists = "User exists with id "
+            }
+            
+            struct signOut {
+                static let logSignOut = "Signed out user with id "
+                static let signOut = "Successfully signed out user with id"
+                static let doesNotExist = "User does not exist."
+            }
+            
+            static func signOut_success(uid: String) -> String {
+                return "User \(uid) has been successfully signed out."
+            }
+            
         }
-        
-        struct signOut {
-            static let logSignOut = "Signed out user with id "
-            static let signOut = "Successfully signed out user with id"
-            static let doesNotExist = "User does not exist."
-        }
-        
     }
-    
 }

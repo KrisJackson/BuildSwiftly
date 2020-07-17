@@ -18,14 +18,15 @@ import Firebase
  */
 class Batch {
     
-    typealias FileCompletionBlock = (Error) -> Void
+    typealias FileCompletionBlock = (Error?) -> Void
     private static var block: FileCompletionBlock?
     
     /// Send a batch of files to Firebase Storage.
     static func upload(media: [Media], atPath path: StorageReference, _ completion: @escaping FileCompletionBlock) {
         
         if media.count == 0 {
-            completion(Error.error(type: .weak, text: "There are no items in media to store."))
+            Logging.log(type: .warning, text: "There are no items in media to store.")
+            completion(BSError(description: "There are no items in media to store."))
             return
         }
 
@@ -44,30 +45,27 @@ class Batch {
             /// If data is `nil` then it does not exist
             /// Could happen if there is a typo in the file name or if extension is wrong
             guard let data = media[index].data else {
-                block!(Error.error(type: .weak, text: "Data does not exist!"))
+                Logging.log(type: .warning, text: "Data does not exist!")
+                block!(BSError(description: "Data does not exist!"))
                 return
             }
             
             /// Begin uploading data to Firebase Storage. 
             FirFile.shared.upload(data: data, withName: fileName, atPath: path, block: { (url, error) in
-                switch error.type {
-                case .none:
-                    
-                    self.store(media: media, atPath: path, forIndex: index + 1)
-                    break
-                    
-                default:
-                    
-                    block!(Error.error(type: error.type, text: error.text))
-                    break
-                    
+                if let error = error {
+                    Logging.log(type: .warning, text: error.localizedDescription)
+                    block!(error)
+                    return
                 }
+                
+                self.store(media: media, atPath: path, forIndex: index + 1)
             })
             return
             
         }
         
-        if block != nil { block!(Error.error(type: .none, text: "Successfully added media to Firebase Storage!")) }
+        Logging.log(type: .debug, text: "Successfully added media to Firebase Storage.")
+        if block != nil { block!(nil) }
         
     }
     
