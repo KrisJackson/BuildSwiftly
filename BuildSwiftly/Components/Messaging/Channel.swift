@@ -140,7 +140,7 @@ extension BSMessaging {
                         let data: [String: Any] = snapshot.documents[0].data()
                         
                         /// Saves the channel data to be escaped
-                        let channel: BSChannel = BSChannel()
+                        var channel: BSChannel = BSChannel()
                         channel.channelID = snapshot.documents[0].documentID
                         channel.admin = data[String.Database.Channel.admin] as? [String] ?? nil
                         channel.author = data[String.Database.Channel.author] as? String ?? nil
