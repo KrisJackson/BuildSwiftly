@@ -37,7 +37,7 @@ extension BSMessaging {
             let ChannelCollection = Firestore.firestore().collection(String.Database.Channel.collectionID)
             let newChannelID: String = ChannelCollection.document().documentID
             
-            log.debug("Creating new channel with ID \(newChannelID)...")
+            Logging.log(type: .info, text: "Creating new channel with ID \(newChannelID)...")
             
             /// Channel can only be created if there is a valid user
             guard let author = author else {

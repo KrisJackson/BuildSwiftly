@@ -136,7 +136,7 @@ class BSMessaging {
                         return
                     }
                     
-                                            /// Sends text if exists
+                    /// Sends text if exists
                     if let _ = self.messageBuf.text {
                         
                         /// Message contains text

@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         
         let messaging = BSMessaging.Sender(message: message)
         messaging.send { (error) in
-            print("🟢 " + (error.text ?? "No error message"))
+            Logging.log(type: .info, text: error?.localizedDescription ?? "No error message")
         }
     }
 

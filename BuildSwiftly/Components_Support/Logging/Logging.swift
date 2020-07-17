@@ -2,7 +2,7 @@
 //  Logging.swift
 //  BuildSwiftly
 //
-//  Created by Kristopher Jackson on 7/17/20.
+//  Created by Kristopher Jackson 
 //  Copyright © 2020 Kristopher Jackson. All rights reserved.
 //
 

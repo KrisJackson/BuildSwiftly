@@ -106,7 +106,7 @@ extension BSAuth {
             } else {
                 
                 Logging.log(type: .warning, text: "Email does not contain a valid extension.")
-                return NMError(description: "Email does not contain a valid extension.")
+                return BSError(description: "Email does not contain a valid extension.")
                 
             }
             

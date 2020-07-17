@@ -40,7 +40,7 @@ class Batch {
             
             let buf = media[index]
             let fileName = String(format: "\(buf.name ?? "unnamed-file-\(index)").\(buf.ext ?? ".txt")")
-            if let _ = buf.name {} else { log.warning("Media does not have a name.") }
+            if let _ = buf.name {} else { Logging.log(type: .warning, text: "Media does not have a name.") }
             
             /// If data is `nil` then it does not exist
             /// Could happen if there is a typo in the file name or if extension is wrong
