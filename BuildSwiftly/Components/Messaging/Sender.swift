@@ -15,7 +15,7 @@ import Foundation
  In-app messaging component that facilitates the exchange of data and text sent between users.
  
  There are many uses for a messaging component within an app. In-app messaging allows users to communicate and send data to each other over the network. To effectively allow users to communicate between one another, this component is organized into three main
- sub-components: `Channel`, `Sender`, and `Data`. A channel can be thought of as a 'chat room'. Each `Channel` contains metadata about the chat room that can be easily and quickly accessed. To send a message to the set of users in the `Channel`, the client should call `Sender`. `Sender` is soley responsible for the delivery of the message within the channel. Finally, to retrieve the data (messages or channels) for your UI, the client should call `Data`.
+ sub-components: `Channel`, `Sender`, and `Data`. A channel can be thought of as a 'chat room'. Each `Channel` contains important information about the chat room that can be easily and quickly accessed. To send a message to the set of users in the `Channel`, the client should call `Sender`. `Sender` is soley responsible for the delivery of the message within the channel. Finally, to retrieve the data (messages or channels) for your UI, the client should call `Data`.
  - This component assumes that the client is using Firebase Auth, Firebase Storage, and Cloud Firestore, and has already set up those tools as needed.
  - Messaging component allows both direct messages and group messages. The current user should be added to the group of users.
  - Sending a message requires the channel ID. If the channel ID is not known, use `BSMessaging.Channels.doesExist(users: [String])`
@@ -35,6 +35,7 @@ class BSMessaging {
         private var messageRef: DocumentReference!
         
         /**
+         
             Constructor prepares message to be sent and checks that message contains values for required fields.
          
             - Parameter message: Message that a user intends to send within a channel. `Message.messageID`, `Message.timestamp`, and `Message.mediaID` is assigned by the API, so client should pass `nil` or leave fields empty when passing through `Sender`.

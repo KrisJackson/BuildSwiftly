@@ -5,8 +5,6 @@
 //  Created by Kristopher Jackson
 //  Copyright © 2020 Kristopher Jackson. All rights reserved.
 //
-//
-// Code from https://stackoverflow.com/questions/49934195/how-to-upload-multiple-image-on-firebase-using-swift
 
 import Foundation
 import Firebase

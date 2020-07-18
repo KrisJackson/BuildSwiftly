@@ -30,38 +30,22 @@ extension BSMessaging {
         /// Last document retrieved by `get()`
         private var lastDocument: DocumentSnapshot!
         
-        
         /**
          
-            Initializer takes in the type of data to be retrieved.
+         Populates `data` with messages in a channel starting at the last document retrieved. The number
+         of messages in the array will not exeed the limit, and all messages are ordered by the timestamp. This
+         function should be called if the client does not have a channel ID, but wishes to retrieve messages in
+         an existing channel.
          
-            - Parameter type: The type of data to be retrieved
+         - Parameter users: The group of users to uniquely identify the channel containing the set of messages.
+         - Parameter limit: The maximum number of messages to be added to `data`. If **limit == 0** add all messages to `data`.
+         - Parameter completion: Escapes with `Error`.
+         - Parameter error: `nil` if no error exists otherwise `error.localizedDescription` to log error message.
          
-            - If `.messages`: client should call either `get(forUsers users: [String])` or `get(forChannel channelID: String)` otherwise error.
-            - If `.channels`: client should call either `get(forUser user: String)` otherwise error.
-         
-         */
-        init(type: DataType) {
-            self.type = type
-        }
-        
-        
-        /**
-         
-          Populates data with messages in a chanel starting at the last document retrieved. The number of messages in the array will not exeed the limit, and all messages are ordered by the timestamp. This function should be called if the client does not have a channel ID, but wishes to retrieve messages in an existing channel.
-         
-         - Parameter users: The group of users to uniquely identify the channel
-         - Parameter limit: The maximum number of data to be added to the array. If **limit == 0** add all data to array .
-         - Parameter completion: Escapes with `Error`
-         - Parameter error: Contains a message and the error type upon completion
-         
-         - This function should ONLY be called if `Data(type: .message)` was passed.
          - The array uses a listener to populate the data, and will check periodically for new messages.
          
          */
-        func get(forUsers users: [String], limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
-            
-            // MARK: Handle errors (if .channel was passed and this function was called)
+        func getMessages(forUsers users: [String], limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
             
             /// Gets the channel with the given set of users
             Channel.doesChannelExist(withUsers: users) { (exists, channel, error) in
@@ -81,7 +65,7 @@ extension BSMessaging {
                 }
                 
                 /// Get messages with channel ID
-                self.get(forChannel: channel.channelID ?? "", limit: limit) { (error) in
+                self.getMessages(forChannel: channel.channelID ?? "", limit: limit) { (error) in
                     completion(error)
                 }
                     
@@ -92,20 +76,19 @@ extension BSMessaging {
         
         /**
          
-          Populates data with messages in a chanel starting at the last document retrieved. The number of messages in the array will not exeed the limit, and all messages are ordered by the timestamp. This function uses the channelID to retrieve messages in an existing channel.
+         Populates data with messages in a chanel starting at the last document retrieved. The number
+         of messages in the array will not exeed the limit, and all messages are ordered by the timestamp.
+         This function uses the channelID to retrieve messages in an existing channel.
          
          - Parameter channelID: The unique identifier of an existing channel
          - Parameter limit: The maximum number of data to be added to the array. If **limit == 0** add all data to array .
-         - Parameter completion: Escapes with `Error`
-         - Parameter error: Contains a message and the error type upon completion
+         - Parameter completion: Escapes with `Error`.
+         - Parameter error: `nil` if no error exists otherwise `error.localizedDescription` to log error message.
          
-         - This function should ONLY be called if `Data(type: .message)` was passed.
          - The array uses a listener to populate the data, and will check periodically for new messages.
          
          */
-        func get(forChannel channelID: String, limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
-            
-            // MARK: Handle errors (if .channel was passed and this function was called)
+        func getMessages(forChannel channelID: String, limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
             
             /// Reference to the messages pointing to a given channelID
             var messagesRef = Firestore.firestore().collection(String.Database.Messaging.collectionID)
@@ -123,6 +106,12 @@ extension BSMessaging {
             /// Populate data with messages
             self.populateData(fromReference: messagesRef) { (document) -> Any in
                 
+                /// Function ends when document is `nil`
+                guard let document = document else {
+                     completion(nil)
+                     return "Message data has been collected!" /// Silenced warning by returning error message
+                 }
+                
                 var message = BSMessage()
                 message.messageID = document.documentID
                 message.channelID = document.data()[String.Database.Messaging.channelID] as? String
@@ -135,16 +124,14 @@ extension BSMessaging {
                 return message
                 
             }
-                
-            Logging.log(type: .debug, text: "Message data has been collected!")
-            completion(nil)
             
         }
         
         
         /**
          
-          Populates data with channel in a channels belonging to a specified user. The number of data in the array will not exeed the limit, and all channels are ordered by `lastTimestamp`.
+         Populates data with channel in a channels belonging to a specified user. The number
+         of data in the array will not exeed the limit, and all channels are ordered by `lastTimestamp`.
          
          - Parameter user: The unique identifier of the user
          - Parameter limit: The maximum number of data to be added to the array
@@ -156,8 +143,6 @@ extension BSMessaging {
          
          */
         func get(forUser user: String, limit: Int = 0, _ completion: @escaping (_ error: Error?) -> Void) {
-            
-            // MARK: Handle errors (if .messages was passed and this function was called)
             
             /// Reference to the messages pointing to a given channelID
             var channelsRef = Firestore.firestore().collection(String.Database.Messaging.collectionID)
@@ -175,6 +160,12 @@ extension BSMessaging {
             /// Populate data with channels
             self.populateData(fromReference: channelsRef) { (document) -> Any in
                 
+                /// Function ends when document is `nil`
+                guard let document = document else {
+                    completion(nil)
+                    return "Channel data has been collected." /// Silenced warning by returning error message
+                }
+                
                 var channel = BSChannel()
                 channel.channelID = document.documentID
                 channel.admin = document.data()[String.Database.Channel.admin] as? [String]
@@ -189,9 +180,6 @@ extension BSMessaging {
                 return channel
                 
             }
-            
-            Logging.log(type: .debug, text: "Channel data has been collected.")
-            completion(nil)
         }
         
         
@@ -204,9 +192,7 @@ extension BSMessaging {
          - Parameter document: Document containing data from the query. Client should extract and return data in desired format.
          
          */
-        
-        private func populateData(fromReference ref: Query, _ completion: @escaping (_ document: QueryDocumentSnapshot) -> Any) {
-            
+        private func populateData(fromReference ref: Query, _ completion: @escaping (_ document: QueryDocumentSnapshot?) -> Any) {
             /// Populates `data` with messages
             ref.addSnapshotListener { (snapshot, error) in /// **Listener** allows for real-time updates
                 
@@ -216,14 +202,16 @@ extension BSMessaging {
                 
                 /// Iterate through every document
                 for document in snapshot.documents {
-                    self.data.append(completion(document))
-                    self.lastDocument = document
+                    DispatchQueue.main.async { /// Update variables on the main thread
+                        self.data.append(completion(document))
+                        self.lastDocument = document
+                    }
                 }
                 
+                /// IMPORTANT: This must complete inside of the listener to remain on the same thread
+                Logging.log(type: .debug, text: completion(nil))
             }
-        
         }
         
     }
-    
 } 
