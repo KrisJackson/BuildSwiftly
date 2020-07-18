@@ -20,7 +20,6 @@ pod 'Firebase/Auth'
 pod 'Firebase/Analytics'
 pod 'Firebase/Firestore'
 pod 'Firebase/Messaging'
-
-pod 'SwiftyBeaver'
+pod 'Firebase/Storage'
 
 end

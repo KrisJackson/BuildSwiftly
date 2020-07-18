@@ -9,33 +9,54 @@
 import UIKit
 import FirebaseMessaging
 
-class PushNotification: NSObject, UNUserNotificationCenterDelegate, MessagingDelegate {
+class BSPushNotification: NSObject, UNUserNotificationCenterDelegate, MessagingDelegate {
 
-    // This should be called in app delegate
+    /**
+     
+     Initializes and configures push notifications.
+     
+     This function should be called in `AppDelegate.application(didFinishLaunchingWithOptions: )`.
+     
+     */
     func registerForPushNotifications() {
         if #available(iOS 10.0, *) {
+            
             // For iOS 10 display notification (sent via APNS)
             UNUserNotificationCenter.current().delegate = self
-            
+
             // Allow alert, badge, and sound
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             UNUserNotificationCenter.current().requestAuthorization(
                 options: authOptions,
                 completionHandler: {_, _ in })
-            
+
             // For iOS 10 data message (sent via FCM)
             Messaging.messaging().delegate = self
-        } else {
             
+        } else {
+
             // Allow alert, badge, and sound
             let settings: UIUserNotificationSettings =
                 UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
             UIApplication.shared.registerUserNotificationSettings(settings)
-            
+
         }
         UIApplication.shared.registerForRemoteNotifications()
     }
+
     
+    /**
+     
+     Sends push notification from the current device to another specified device.
+     
+     - Parameter title: The title of the push notification
+     - Parameter message: The body of the push notification
+     - Parameter token: The unique token of the receiving device
+     
+     - Firebase Cloud Messaging API Key is required for this to work as expected.
+     - Push Notifications will not work with the simulator, so test with real devices.
+     
+     */
     static func send(title: String?, message: String?, toDeviceWithToken token: String) {
         let urlString = "https://fcm.googleapis.com/fcm/send"
         let url = NSURL(string: urlString)!
@@ -55,7 +76,7 @@ class PushNotification: NSObject, UNUserNotificationCenterDelegate, MessagingDel
         request.httpMethod = "POST"
         request.httpBody = try? JSONSerialization.data(withJSONObject: paramString, options: [.prettyPrinted])
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("key=\(FCM_API_KEY)", forHTTPHeaderField: "Authorization")
+        request.setValue("key=\(FCM_SERVER_KEY)", forHTTPHeaderField: "Authorization") /// Provide SERVER_KEY in Secrets.swift as a Global variable
 
         let task =  URLSession.shared.dataTask(with: request as URLRequest)  { (data, response, error) in
             do {
@@ -70,21 +91,27 @@ class PushNotification: NSObject, UNUserNotificationCenterDelegate, MessagingDel
         }
         task.resume()
     }
-    
+
 }
 
 extension AppDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Messaging.messaging().apnsToken = deviceToken
+        /// FIRMessaging uses method swizzling to ensure that the APNS token is set automatically.
+        /// If swizzling is disabled, this manually sets the deviceToken
+//        Messaging.messaging().apnsToken = deviceToken
     }
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        log.debug(response.notification.request.content.userInfo)
+        /// For remote notifications, this property contains the entire notification payload.
+        /// For local notifications, you configure the property directly before scheduling the notification.
+        Logging.log(type: .info, text: response.notification.request.content.userInfo)
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        /// Escapes with notification presentation options
+        /// For notifications, allow alerts, badge on app icon, and sound
         completionHandler([.alert, .badge, .sound])
     }
-    
+
 }
