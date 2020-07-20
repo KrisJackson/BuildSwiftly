@@ -9,10 +9,10 @@
 import Foundation
 import Firebase
 
-class FirFile: NSObject {
+class BSStorage: NSObject {
 
     /// Singleton instance
-    static let shared: FirFile = FirFile()
+    static let shared: BSStorage = BSStorage()
 
     /// Current uploading task
     var currentUploadTask: StorageUploadTask?
