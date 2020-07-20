@@ -1,5 +1,5 @@
 //
-//  BatchUpload.swift
+//  BatchStore.swift
 //  BuildSwiftly
 //
 //  Created by Kristopher Jackson
@@ -16,7 +16,7 @@ import Firebase
  Recursively send a batch of data to Firebase Storage.
  
  */
-class Batch {
+class BSBatch {
     
     typealias FileCompletionBlock = (Error?) -> Void
     private static var block: FileCompletionBlock?
@@ -51,7 +51,7 @@ class Batch {
             }
             
             /// Begin uploading data to Firebase Storage. 
-            FirFile.shared.upload(data: data, withName: fileName, atPath: path, block: { (url, error) in
+            BSStorage.shared.upload(data: data, withName: fileName, atPath: path, block: { (url, error) in
                 if let error = error {
                     Logging.log(type: .warning, text: error.localizedDescription)
                     block!(error)

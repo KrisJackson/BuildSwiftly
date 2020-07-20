@@ -129,7 +129,7 @@ class BSMessaging {
                 
                 /// Upload media to Firebase Storage
                 /// If media is successfully stored, send message to Firestore.
-                Batch.upload(media: batchMedia, atPath: Storage.storage().reference(withPath: "\(String.Database.Messaging.collectionID)/")) { (error) in
+                BSBatch.upload(media: batchMedia, atPath: Storage.storage().reference(withPath: "\(String.Database.Messaging.collectionID)/")) { (error) in
                     
                     if let error = error {
                         /// Batch upload did not success. Terminate and complete with error
