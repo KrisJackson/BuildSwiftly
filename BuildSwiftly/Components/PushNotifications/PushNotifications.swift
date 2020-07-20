@@ -18,7 +18,7 @@ class BSPushNotification: NSObject, UNUserNotificationCenterDelegate, MessagingD
      This function should be called in `AppDelegate.application(didFinishLaunchingWithOptions: )`.
      
      */
-    func registerForPushNotifications() {
+    func register() {
         if #available(iOS 10.0, *) {
             
             // For iOS 10 display notification (sent via APNS)
