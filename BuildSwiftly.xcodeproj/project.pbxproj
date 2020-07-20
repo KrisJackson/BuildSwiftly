@@ -304,6 +304,7 @@
 				18A8B6FD24A282ED008878F3 /* README.md */,
 				18A8B6FF24A28380008878F3 /* Authentication */,
 				186F676724B8A3440065D2B6 /* BatchStore */,
+				18EA1AB824C24FAD000C35C0 /* Logging */,
 				1882157324B51059003D4DA8 /* Messaging */,
 				18016F8124B2B1AF00796621 /* PushNotifications */,
 				18F76E4824C5437D001ABCDF /* Storage */,
@@ -316,7 +317,6 @@
 			isa = PBXGroup;
 			children = (
 				18A8B6F824A28279008878F3 /* ComponentsSupport-README_.md */,
-				18EA1AB824C24FAD000C35C0 /* Logging */,
 				186F676A24B8A5260065D2B6 /* Media */,
 				18A8B6F624A2825B008878F3 /* Error */,
 			);

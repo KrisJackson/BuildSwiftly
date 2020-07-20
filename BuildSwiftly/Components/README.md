@@ -12,7 +12,7 @@ There is no particular structure that is required, however, I *require* any new 
 
 **More components coming soon. This document show be updated when necessary.**
 
-* Authentication - ***Firestore***: This folder contains components for authenticating, verifying, and referencing a user and their respective data
+* Authentication - ***Firebase Authentication***: This folder contains components for authenticating, verifying, and referencing a user and their respective data
+* Logging - ***Inspired by SwiftyBeaver***: This folder contains components for efficient logging and developer friendly logging
 * Push Notifications - ***Firebase Cloud Messaging***: This folder contains components for sending push notifications from a sender to a receiver 
 * Messages - ***Firestore, Firebase Storage***: This folder contains components for sending messages and media between two or more users
-
