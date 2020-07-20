@@ -1,5 +1,5 @@
 //
-//  SignOut.swift
+//  Current.swift
 //  BuildSwiftly
 //
 //  Created by Kristopher Jackson
@@ -9,15 +9,9 @@
 import Foundation
 import Firebase
 
-/**
- 
- Set of components that handles signing up, logging in, verifying, retrieving and creating a user.
- 
- This component should be called anytime the client needs to store or retieve any data regarding a user.
- 
- */
-class BSAuth {
+extension BSUser {
     
+        
     /**
      
      Gathers data related to the current user and handles sign out.
@@ -25,7 +19,7 @@ class BSAuth {
      This class is useful when needing a quick reference to metadata related to the current users.
      
      */
-    class CurrentUser {
+    class Current {
         
         /// Metadata related to the current user.
         ///
@@ -58,7 +52,7 @@ class BSAuth {
          
          */
         static func signOut() {
-            let (user, doesExist) = CurrentUser.doesExist()
+            let (user, doesExist) = Current.doesExist()
             
             /// User exists
             if doesExist {
@@ -73,5 +67,6 @@ class BSAuth {
                 
             }
         }
+        
     }
 }

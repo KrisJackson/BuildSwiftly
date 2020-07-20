@@ -8,7 +8,14 @@
 import Foundation
 import Firebase
 
-extension BSAuth {
+/**
+
+Set of components that handles signing up, logging in, verifying, and creating a user.
+
+This component should be called anytime the client needs to store or retieve any data regarding a user.
+
+*/
+class BSAuth {
     
     /**
      
