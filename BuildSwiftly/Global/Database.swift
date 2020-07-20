@@ -42,5 +42,11 @@ extension String {
             static let lastTimestamp = "lastTimestamp"
             static let lastReplyTo: String = "lastReplyTo"
         }
+        
+        struct Users {
+            
+            static let collectionID = "users"
+            
+        }
     }
 }

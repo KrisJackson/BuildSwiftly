@@ -9,23 +9,24 @@
 import Foundation
 import Firebase
 
-extension BSUser {
+class BSAuth {
     
         
     /**
-     
-     Gathers data related to the current user and handles sign out.
-     
-     This class is useful when needing a quick reference to metadata related to the current users.
-     
-     */
-    class Current {
+
+    Set of components that handles authentication of the current user and the current user session.
+
+    */
+    class CurrentUser {
         
-        /// Metadata related to the current user.
-        ///
-        ///
-        /// - Variable will return `nil` if there is no current user
-        /// - `User` is an object created by Firebase.
+        /**
+         
+         Metadata related to the current user.
+         
+         - Variable will return `nil` if there is no current user
+         - `User` is an object created by Firebase.
+ 
+         */
         let user: User? = Auth.auth().currentUser
         
         
@@ -52,7 +53,7 @@ extension BSUser {
          
          */
         static func signOut() {
-            let (user, doesExist) = Current.doesExist()
+            let (user, doesExist) = CurrentUser.doesExist()
             
             /// User exists
             if doesExist {

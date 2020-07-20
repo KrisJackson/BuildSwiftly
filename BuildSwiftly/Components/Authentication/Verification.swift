@@ -12,9 +12,7 @@ extension BSAuth {
     
     /**
      
-     
      Contains methods to verify a user's account.
-     
      
      */
     class Verification {
