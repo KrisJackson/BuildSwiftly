@@ -42,18 +42,11 @@ class Logging {
             emoji = "🔴 ERROR"
         }
         
-        let date = Date(timeIntervalSince1970: Date().timeIntervalSince1970)
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeStyle = DateFormatter.Style.medium
-        dateFormatter.dateStyle = DateFormatter.Style.short
-        dateFormatter.timeZone = .current
-        let localDate = dateFormatter.string(from: date)
-        
 //        print("\(localDate) => \(emoji) => \(stripParams(function: function)) => \(line) - \(text)")
-        print("\(localDate) => \(emoji) => \(function) => \(line) - \(text)")
+        print("\(getDate()) => \(emoji) => \(function) => \(line) - \(text)")
     }
     
-    /// removes the parameters from a function
+    /// Removes the parameters from a function.
     private func stripParams(function: String) -> String {
         var f = function
         if let indexOfBrace = f.find("(") {
@@ -65,5 +58,15 @@ class Logging {
         }
         f += "()"
         return f
+    }
+    
+    /// Gets the current date and time and returns as a string.
+    private static func getDate() -> String {
+        let date = Date(timeIntervalSince1970: Date().timeIntervalSince1970)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = DateFormatter.Style.medium
+        dateFormatter.dateStyle = DateFormatter.Style.short
+        dateFormatter.timeZone = .current
+        return dateFormatter.string(from: date)
     }
 }
